@@ -1483,6 +1483,205 @@ static s32 lua_fset(lua_State* lua)
     return 0;
 }
 
+// static s32 lua_host(lua_State* lua)
+// {
+//     tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+//     tic_api_host(tic);
+
+//     return 1;
+// }
+
+// static s32 lua_join(lua_State* lua)
+// {
+//     tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+//     tic_api_join(tic);
+
+//     return 1;
+// }
+
+static s32 lua_socket(lua_State* lua)
+{
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+    
+    lua_pushinteger(lua, tic_api_socket(tic));
+    return 1;
+}
+
+
+static s32 lua_bind(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 3)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        const char* address = printString(lua, 2);
+        u16 port = getLuaNumber(lua, 3);
+
+        lua_pushinteger(lua, tic_api_bind(tic, sock, address, port));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, bind(sock, address, port)\n");
+
+    return 0;
+}
+
+static s32 lua_listen(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 2)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        s32 backlog = getLuaNumber(lua, 2);
+
+        lua_pushinteger(lua, tic_api_listen(tic, sock, backlog));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, listen(sock, backlog)\n");
+
+    return 0;
+}
+
+static s32 lua_accept(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 1)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+
+        lua_pushinteger(lua, tic_api_accept(tic, sock));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, accept(sock)\n");
+
+    return 0;
+}
+
+static s32 lua_connect(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 3)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        const char* address = printString(lua, 2);
+        u16 port = getLuaNumber(lua, 3);
+
+        lua_pushinteger(lua, tic_api_connect(tic, sock, address, port));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, connect(sock, address, port)\n");
+
+    return 0;
+}
+
+static s32 lua_closesocket(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 1)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+
+        lua_pushinteger(lua, tic_api_closesocket(tic, sock));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, close(sock)\n");
+
+    return 0;
+}
+
+static s32 lua_recv(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 1)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        s32 n = tic_api_recv(tic, sock);
+
+
+        if (n>=1)
+        {
+            lua_pushlstring(lua, tic->recv_buff, n);
+            lua_pushinteger(lua, n);
+
+            return 2;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else luaL_error(lua, "invalid params, recv(sock) -> data\n");
+
+    return 0;
+}
+
+static s32 lua_send(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 2)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        s32 len = 0;
+        const char* data = lua_tolstring(lua, 2, &len);
+
+        lua_pushinteger(lua, tic_api_send(tic, sock, data, len));
+        return 1;
+    }
+    else luaL_error(lua, "invalid params, send(sock, data)\n");
+
+    return 0;
+}
+
+static s32 lua_gsopt(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+
+    if(top >= 1)
+    {
+        s32 sock = getLuaNumber(lua, 1);
+        s32 error =0;
+        s32 ret = tic_api_gsopt(tic, sock, &error);
+
+        
+        lua_pushinteger(lua, ret);
+        lua_pushinteger(lua, error);
+        
+        return 2;
+    }
+    else luaL_error(lua, "invalid params, gsopt(sock) -> ret, err\n");
+
+    return 0;
+}
+
+static s32 lua_startnet(lua_State *lua)
+{
+    s32 top = lua_gettop(lua);
+    tic_mem* tic = (tic_mem*)getLuaCore(lua);
+   
+    s32 ret = tic_api_startnet(tic);
+
+    lua_pushinteger(lua, ret);
+        
+    return 0;
+}
+
+
 static s32 lua_dofile(lua_State *lua)
 {
     luaL_error(lua, "unknown method: \"dofile\"\n");
@@ -1534,8 +1733,9 @@ void initLuaAPI(tic_core* core)
     for (s32 i = 0; i < COUNT_OF(ApiItems); i++)
         registerLuaFunction(core, ApiItems[i].func, ApiItems[i].name);
 
-    registerLuaFunction(core, lua_dofile, "dofile");
-    registerLuaFunction(core, lua_loadfile, "loadfile");
+    // TODO
+    //registerLuaFunction(core, lua_dofile, "dofile");
+    //registerLuaFunction(core, lua_loadfile, "loadfile");
 }
 
 void closeLua(tic_mem* tic)
@@ -1703,6 +1903,7 @@ void callLuaBoot(tic_mem* tic)
         else lua_pop(lua, 1);
     }
 }
+
 
 static const char* const LuaKeywords [] =
 {

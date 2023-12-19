@@ -33,16 +33,27 @@
     !defined(TIC_BUILD_WITH_WASM)
 
 #   define TIC_BUILD_WITH_LUA      1
-#   define TIC_BUILD_WITH_MOON     1
-#   define TIC_BUILD_WITH_FENNEL   1
-#   define TIC_BUILD_WITH_JS       1
-#   define TIC_BUILD_WITH_WREN     1
-#   define TIC_BUILD_WITH_SCHEME   1
-#   define TIC_BUILD_WITH_SQUIRREL 1
-#   define TIC_BUILD_WITH_PYTHON   1
-#   define TIC_BUILD_WITH_WASM     1
+// #   define TIC_BUILD_WITH_MOON     1
+// #   define TIC_BUILD_WITH_FENNEL   1
+// #   define TIC_BUILD_WITH_JS       1
+// #   define TIC_BUILD_WITH_WREN     1
+// #   define TIC_BUILD_WITH_SCHEME   1
+// #   define TIC_BUILD_WITH_SQUIRREL 1
+// #   define TIC_BUILD_WITH_PYTHON   1
+// #   define TIC_BUILD_WITH_WASM     1
 
 #endif
+
+#define TIC_NETWORK 1
+
+#   undef TIC_BUILD_WITH_MOON 
+#   undef TIC_BUILD_WITH_FENNEL
+#   undef TIC_BUILD_WITH_JS      
+#   undef TIC_BUILD_WITH_WREN     
+#   undef TIC_BUILD_WITH_SCHEME   
+#   undef TIC_BUILD_WITH_SQUIRREL 
+#   undef TIC_BUILD_WITH_PYTHON   
+#   undef TIC_BUILD_WITH_WASM     
 
 #if defined(TIC_BUILD_WITH_FENNEL) || defined(TIC_BUILD_WITH_MOON)
 #   define TIC_BUILD_WITH_LUA 1

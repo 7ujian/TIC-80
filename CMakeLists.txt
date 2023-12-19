@@ -548,6 +548,7 @@ macro(MACRO_CORE SCRIPT DEFINE BUILD_DEPRECATED)
         ${TIC80CORE_DIR}/tools.c
         ${TIC80CORE_DIR}/zip.c
         ${TIC80CORE_DIR}/tilesheet.c
+        ${TIC80CORE_DIR}/socket.c
     )
 
     if(${BUILD_DEPRECATED})
@@ -561,6 +562,9 @@ macro(MACRO_CORE SCRIPT DEFINE BUILD_DEPRECATED)
         target_link_directories(tic80core${SCRIPT} PRIVATE ${SYSROOT_PATH}/usr/local/lib)
     endif()
 
+    if (MINGW)
+	target_link_libraries(tic80core${SCRIPT} ws2_32)
+    endif()
     target_include_directories(tic80core${SCRIPT}
         PRIVATE
             ${THIRDPARTY_DIR}/moonscript
@@ -627,6 +631,8 @@ if(BUILD_STUB)
     endif()
 
 endif()
+
+
 
 if(BUILD_WITH_MRUBY)
     target_compile_definitions(tic80core PUBLIC TIC_BUILD_WITH_MRUBY=1)

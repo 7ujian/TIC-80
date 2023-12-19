@@ -829,8 +829,98 @@ enum
         3,                                                                                                              \
         0,                                                                                                              \
         void,                                                                                                           \
-        tic_mem*, s32 index, u8 flag, bool value)
-
+        tic_mem*, s32 index, u8 flag, bool value)                                                                       \
+    macro(socket,                                                                                                       \
+        "socket() -> socket",                                                                                           \
+                                                                                                                        \
+        "Create a socket",                                                                                              \
+        0,                                                                                                              \
+        0,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*)                                                                                                       \
+    macro(bind,                                                                                                         \
+        "bind(sock, address, port) -> result",                                                                          \
+                                                                                                                        \
+        "Bind a socket",                                                                                                \
+        3,                                                                                                              \
+        3,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32, const char *, u16)                                                                               \
+    macro(listen,                                                                                                       \
+        "listen(sock, backlog) -> result",                                                                              \
+                                                                                                                        \
+        "Listen a socket",                                                                                              \
+        2,                                                                                                              \
+        2,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32, s32)                                                                                             \
+    macro(accept,                                                                                                       \
+        "accept(sock) -> sock",                                                                                         \
+                                                                                                                        \
+        "Accept a socket",                                                                                              \
+        1,                                                                                                              \
+        1,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32)                                                                                                  \
+    macro(connect,                                                                                                      \
+        "connect(sock, address, port) -> result",                                                                       \
+                                                                                                                        \
+        "Connect a socket",                                                                                             \
+        3,                                                                                                              \
+        3,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32, const char *, u16)                                                                               \
+    macro(closesocket,                                                                                                      \
+        "closesocket(sock) -> result",                                                                       \
+                                                                                                                        \
+        "Close a socket",                                                                                             \
+        1,                                                                                                              \
+        1,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32)                                                                               \
+    macro(recv,                                                                                                      \
+        "recv(sock) -> data",                                                                       \
+                                                                                                                        \
+        "Read data from a socket",                                                                                             \
+        1,                                                                                                              \
+        1,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32)                                                                               \
+    macro(send,                                                                                                      \
+        "send(sock, data) -> result",                                                                       \
+                                                                                                                        \
+        "Send data to a socket",                                                                                             \
+        3,                                                                                                              \
+        3,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32, const char *, s32)                                                                               \
+    macro(gsopt,                                                                                                      \
+        "gsopt(sock) -> result, err",                                                                       \
+                                                                                                                        \
+        "Get sock opt",                                                                                             \
+        1,                                                                                                              \
+        1,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*, s32, s32*)                                                                               \
+    macro(startnet,                                                                                                      \
+        "startnet() -> result",                                                                       \
+                                                                                                                        \
+        "Start up network",                                                                                             \
+        0,                                                                                                              \
+        0,                                                                                                              \
+        0,                                                                                                              \
+        s32,                                                                                                            \
+        tic_mem*)                                                                               \
+        
 #define TIC_API_DEF(name, _, __, ___, ____, _____, ret, ...) ret tic_api_##name(__VA_ARGS__);
 TIC_API_LIST(TIC_API_DEF)
 #undef TIC_API_DEF
@@ -864,6 +954,11 @@ struct tic_mem
 
         u8 data;
     } input;
+
+#if TIC_NETWORK
+    char recv_buff[TIC_RECV_BUFF_SIZE];
+    char send_buff[TIC_SEND_BUFF_SIZE];
+#endif
 };
 
 tic_mem* tic_core_create(s32 samplerate, tic80_pixel_color_format format);

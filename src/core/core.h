@@ -25,6 +25,7 @@
 #include "api.h"
 #include "tools.h"
 #include "blip_buf.h"
+#include "socket.h"
 
 #define CLOCKRATE (255<<13)
 #define TIC_DEFAULT_COLOR 15
@@ -160,6 +161,8 @@ typedef struct
     {
         s32 l, t, r, b;
     } clip;
+
+    tic_socket_data net;
 
     bool initialized;
 } tic_core_state_data;

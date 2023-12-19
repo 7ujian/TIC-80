@@ -110,6 +110,9 @@
 
 #define TIC_UNUSED(x) (void)x
 
+#define TIC_RECV_BUFF_SIZE 1024
+#define TIC_SEND_BUFF_SIZE 1024
+
 enum
 {
     NoteNone = 0,
